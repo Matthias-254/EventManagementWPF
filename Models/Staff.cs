@@ -6,7 +6,21 @@ using System.Threading.Tasks;
 
 namespace EventManagement.Models
 {
-    class Staff
+    public class Staff
     {
+        public int Id { get; set; }
+        public string Name { get; set; } // NickName
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime Deleted { get; set; } = DateTime.MaxValue;
+    }
+
+    public class StaffEvent
+    {
+        public int Id { get; set; }
+
+
+
+        public Staff Staff { get; set; }
     }
 }
