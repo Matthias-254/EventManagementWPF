@@ -20,6 +20,6 @@ namespace EventManagement.Models
         public int LocationId { get; set; }
 
         public Location Location { get; set; }
-        public List<StaffEvent> StaffEvents { get; set; }
+        public List<StaffEvent> EventStaffs { get; set; }
     }
 }

@@ -4,14 +4,91 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EventManagement"
+        xmlns:res="clr-namespace:EventManagement.Resources"
         mc:Ignorable="d"
         Title="EventManagement" Height="450" Width="800">
     <Window.Resources>
         <ResourceDictionary Source="Resources/Styles.xaml"/>
     </Window.Resources>
-    <TabControl>
-        <TabItem>
-            <TextBlock/>
+    <TabControl x:Name="tcGeneral">
+        <TabItem x:Name="tiGeneral" Header="{x:Static res:Strings.General}">
+            <TextBlock x:Name="Info" Style="{StaticResource tbInfo}" Text="{x:Static res:Strings.MainInfo}"  Height="108" Width="391"/>
+        </TabItem>
+        <TabItem x:Name="tiStaff" Header="{x:Static res:Strings.Staff}" Height="20" VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical">
+                <Grid Margin="10, 15, 0, 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="250"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="{x:Static res:Strings.Staff}" />
+                    <TextBox x:Name="tbSelecting" Grid.Column="1" Style="{StaticResource tbStyle}" KeyUp="tbSelecting_KeyUp"/>
+                </Grid>
+                <DataGrid x:Name="dgStaffs" Style="{StaticResource dgStyle}" Height="200" Width="500" MouseLeftButtonUp="dgStaffs_MouseLeftButtonUp"/>
+                <StackPanel Orientation="Horizontal" Margin="5,10,0,0">
+                    <Button x:Name="btAdd" Style="{StaticResource buStyle}" Content=" + " Click="btAdd_Click"/>
+                    <Button x:Name="btSave" Style="{StaticResource buStyle}" Content="{x:Static res:Strings.SaveChanges}" Click="btSave_Click"/>
+                    <Button x:Name="btDelete" Style="{StaticResource buStyle}" Content="{x:Static res:Strings.Delete}" Click="btDelete_Click"/>
+                </StackPanel>
+                <GroupBox Header="{x:Static res:Strings.SelectedStaff}" Margin="0,5,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="250"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="25"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" Content="{x:Static res:Strings.UserName}"/>
+                        <TextBox x:Name="tbUserName" Grid.Row="0" Grid.Column="1" Style="{StaticResource tbStyle}" LostFocus="tb_LostFocus" TextChanged="tb_TextChanged" />
+                        <Label Grid.Row="1" Grid.Column="0" Content="{x:Static res:Strings.FirstName}"/>
+                        <TextBox x:Name="tbFirstName" Grid.Row="1" Grid.Column="1" Style="{StaticResource tbStyle}" LostFocus="tb_LostFocus" TextChanged="tb_TextChanged"/>
+                        <Label Grid.Row="2" Grid.Column="0" Content="{x:Static res:Strings.LastName}"/>
+                        <TextBox x:Name="tbLastName" Grid.Row="2" Grid.Column="1" Style="{StaticResource tbStyle}" LostFocus="tb_LostFocus" TextChanged="tb_TextChanged" />
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </TabItem>
+        <TabItem x:Name="tiEvents" Header="{x:Static res:Strings.Events}" GotFocus="tiEvents_GotFocus">
+            <StackPanel Orientation="Horizontal">
+                <Grid Margin="10, 15, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="250"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Content="{x:Static res:Strings.Events}"/>
+                    <TextBox x:Name="tbEventSelect" Grid.Row="0" Grid.Column="1" Style="{StaticResource tbStyle}" TextChanged="tbEventSelect_TextChanged"/>
+                    <ListBox x:Name="lbEventSelect" Grid.Row="1" Grid.ColumnSpan="2" ToolTipOpening="lbEventSelect_ToolTipOpening" SelectionChanged="lbEventSelect_SelectionChanged" />
+                </Grid>
+                <Grid Margin="10, 15, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Content="{x:Static res:Strings.Event}"/>
+                    <TextBox x:Name="tbEventName" Grid.Row="0" Grid.Column="1" Style="{StaticResource ResourceKey=tbStyle}" Text="{Binding Name, Mode=TwoWay}" />
+                    <Label Content="{x:Static res:Strings.Description}" Grid.Row="1" Grid.Column="0"/>
+                    <TextBox x:Name="tbEventDescription" Grid.Row="1" Grid.Column="1" Style="{StaticResource ResourceKey=tbStyle}" Text="{Binding Description}" />
+                    <Label Content="{x:Static res:Strings.StartDate}" Grid.Row="2" Grid.Column="0"/>
+                    <DatePicker x:Name="tbEventStartDate" Grid.Row="2" Grid.Column="1" SelectedDate="{Binding Path=StartDate, Mode=TwoWay,TargetNullValue=DateTime.Now}"/>
+                    <Label Grid.Row="3" Content="{x:Static res:Strings.Staffs}"/>
+                    <ListBox x:Name="lbStaffs" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding EventStaffs}" SelectedValuePath="EventId" DisplayMemberPath="Event.Name"/>
+                </Grid>
+            </StackPanel>
+        </TabItem>
+        <TabItem x:Name="tiLocation" Header="{x:Static res:Strings.Location}">
         </TabItem>
     </TabControl>
 </Window>
