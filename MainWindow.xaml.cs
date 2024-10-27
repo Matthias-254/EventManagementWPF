@@ -26,10 +26,16 @@ namespace EventManagement
         Boolean textChanged = false;
         List<Event> eventList { get; set; } = new List<Event>();
         Event selectedEvent { get; set; } = null;
+        List<Location> locationList { get; set; } = new List<Location>();
 
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void tiStaff_GotFocus(object sender, RoutedEventArgs e)
+        {
+            InitTiStaff();
         }
 
         private void dgStaffs_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -72,7 +78,6 @@ namespace EventManagement
                 dgStaffs.Columns[0].Visibility = Visibility.Collapsed;
                 dgStaffs.Columns[1].Width = 100;
                 dgStaffs.Columns[2].Width = 200;
-                dgStaffs.Columns[3].Width = 200;
                 dgStaffs.Columns[2].Header = "First name";
                 dgStaffs.Columns[3].Header = "Last name";
                 btSave.IsEnabled = false;
@@ -200,6 +205,40 @@ namespace EventManagement
         private void tbEventSelect_TextChanged(object sender, TextChangedEventArgs e)
         {
             InitTiEvents();
+        }
+
+        private void InitTiLocation()
+        {
+                locationList = context.Locations
+                    .Where(loc => loc.Deleted > DateTime.Now)
+                    .OrderBy(loc => loc.Name)
+                    .ToList();
+
+                dgLocations.ItemsSource = locationList;
+        }
+
+        private void tiLocation_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (!dgLocations.HasItems)
+            {
+                InitTiLocation();
+            }
+        }
+
+        private void tbLocationSearch_KeyUp(object sender, KeyEventArgs e)
+        {
+            string searchText = tbLocationSearch.Text.ToLower();
+            dgLocations.ItemsSource = locationList
+                .Where(loc => loc.Name.ToLower().Contains(searchText) || loc.Address.ToLower().Contains(searchText))
+                .ToList();
+        }
+
+        private void dgLocations_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (dgLocations.SelectedItem is Location selectedLocation)
+            {
+                MessageBox.Show($"Geselecteerde locatie: {selectedLocation.Name}, Adres: {selectedLocation.Address}");
+            }
         }
     }
 }
