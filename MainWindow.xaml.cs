@@ -57,24 +57,32 @@ namespace EventManagement
 
         private void InitTiStaff()
         {
-            dgStaffs.ItemsSource = (from staff in App.Context.Staffs
-                                    where staff.Deleted > DateTime.Now
+            try
+            {
+                dgStaffs.ItemsSource = (from staff in App.Context.Staffs
+                                        where staff.Deleted > DateTime.Now
                                             && (tbSelecting.Text == ""
                                                 || staff.Name.Contains(tbSelecting.Text)
                                                 || staff.FirstName.Contains(tbSelecting.Text)
                                                 || staff.LastName.Contains(tbSelecting.Text))
-                                     orderby staff.LastName, staff.FirstName
-                                     select new StaffDatagridViewModel(staff)
-                                     ).ToList();
-            dgStaffs.Columns[0].Visibility = Visibility.Collapsed;
-            dgStaffs.Columns[1].Width = 100;
-            dgStaffs.Columns[2].Width = 200;
-            dgStaffs.Columns[3].Width = 200;
-            dgStaffs.Columns[2].Header = "First name";
-            dgStaffs.Columns[3].Header = "Last name";
-            btSave.IsEnabled = false;
-            tbUserName.IsEnabled = false;
-            btDelete.IsEnabled = false;
+                                        orderby staff.LastName, staff.FirstName
+                                        select new StaffDatagridViewModel(staff)
+                                        ).ToList();
+
+                dgStaffs.Columns[0].Visibility = Visibility.Collapsed;
+                dgStaffs.Columns[1].Width = 100;
+                dgStaffs.Columns[2].Width = 200;
+                dgStaffs.Columns[3].Width = 200;
+                dgStaffs.Columns[2].Header = "First name";
+                dgStaffs.Columns[3].Header = "Last name";
+                btSave.IsEnabled = false;
+                tbUserName.IsEnabled = false;
+                btDelete.IsEnabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Er is een fout opgetreden bij het ophalen van medewerkers: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void btSave_Click(object sender, RoutedEventArgs e)
@@ -111,21 +119,27 @@ namespace EventManagement
 
         private void InitTiEvents()
         {
-
-            eventList = context.Events
-                            .Where(p => p.Deleted > DateTime.Now
-                                    && (tbEventSelect.Text == "" || p.Name.Contains(tbEventSelect.Text)))
-                            .OrderBy(p => p.Name)
-                            .Include(p => p.EventStaffs)
-                                .ThenInclude(pp => pp.Staff)
-                            .ToList();
-
-            lbEventSelect.ItemsSource = (from even in eventList
-                                           select new ListBoxItem { Content = even.Name + "   - " + (even.Description.Length > 30 ? even.Description.Substring(0, 30) + " ..." : even.Description) });
-
-            foreach (ListBoxItem item in lbEventSelect.Items)
+            try
             {
-                item.MouseEnter += new MouseEventHandler(lbEventSelectItem_MouseEnter);
+                eventList = context.Events
+                                .Where(p => p.Deleted > DateTime.Now
+                                            && (tbEventSelect.Text == "" || p.Name.Contains(tbEventSelect.Text)))
+                                .OrderBy(p => p.Name)
+                                .Include(p => p.EventStaffs)
+                                    .ThenInclude(pp => pp.Staff)
+                                .ToList();
+
+                lbEventSelect.ItemsSource = (from even in eventList
+                                             select new ListBoxItem { Content = even.Name + "   - " + (even.Description.Length > 30 ? even.Description.Substring(0, 30) + " ..." : even.Description) });
+
+                foreach (ListBoxItem item in lbEventSelect.Items)
+                {
+                    item.MouseEnter += new MouseEventHandler(lbEventSelectItem_MouseEnter);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Er is een fout opgetreden bij het ophalen van evenementen: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
