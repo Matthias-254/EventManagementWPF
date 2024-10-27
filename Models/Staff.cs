@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,13 @@ namespace EventManagement.Models
     {
         public int Id { get; set; }
 
+        [ForeignKey("Staff")]
+        public int StaffId { get; set; }
 
+        [ForeignKey("Event")]
+        public int EventId { get; set; }
+        public DateTime Added { get; set; } = DateTime.Now;
+        public DateTime Deleted { get; set; } = DateTime.MaxValue;
 
         public Staff Staff { get; set; }
     }

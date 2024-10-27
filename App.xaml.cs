@@ -9,6 +9,13 @@ namespace EventManagement
     /// </summary>
     public partial class App : Application
     {
+        static public EM_Context Context { get; private set; }
+
+        public App()
+        {
+            Context = new EM_Context();
+            new Seeder(Context);
+        }
     }
 
 }

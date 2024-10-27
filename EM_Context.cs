@@ -13,7 +13,7 @@ namespace EventManagement
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<Location> Locations { get; set; }
-        public DbSet<StaffEvent> StaffEvents { get; set; }
+        public DbSet<StaffEvent> StaffsEvents { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

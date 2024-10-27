@@ -16,6 +16,8 @@ namespace EventManagement
     /// </summary>
     public partial class MainWindow : Window
     {
+        EM_Context context = App.Context;
+
         public MainWindow()
         {
             InitializeComponent();
