@@ -12,10 +12,16 @@
     </Window.Resources>
     <TabControl x:Name="tcGeneral">
         <TabItem x:Name="tiGeneral" Header="{x:Static res:Strings.General}">
-            <TextBlock x:Name="Info" Style="{StaticResource tbInfo}" Text="{x:Static res:Strings.MainInfo}"  Height="108" Width="391"/>
+            <Grid Style="{StaticResource GeneralBackgroundColorStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30*"/>
+                    <ColumnDefinition Width="367*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="Info" Style="{StaticResource GeneralTextColorStyle}" Text="{x:Static res:Strings.MainInfo}"  Height="108" Width="391" Grid.Column="1" Margin="142,149,202,149"/>
+            </Grid>
         </TabItem>
         <TabItem x:Name="tiStaff" Header="{x:Static res:Strings.Staff}" Height="20" VerticalAlignment="Top" GotFocus="tiStaff_GotFocus">
-            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical" Style="{StaticResource TabBackgroundColorStyle}">
                 <Grid Margin="10, 15, 0, 5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100"/>
@@ -24,11 +30,11 @@
                     <Label Content="{x:Static res:Strings.Staff}" />
                     <TextBox x:Name="tbSelecting" Grid.Column="1" Style="{StaticResource tbStyle}" KeyUp="tbSelecting_KeyUp"/>
                 </Grid>
-                <DataGrid x:Name="dgStaffs" Style="{StaticResource dgStyle}" Height="200" Width="500" MouseLeftButtonUp="dgStaffs_MouseLeftButtonUp"/>
+                <DataGrid x:Name="dgStaffs" Style="{StaticResource dgStyle}" Height="130" Width="500" MouseLeftButtonUp="dgStaffs_MouseLeftButtonUp"/>
                 <StackPanel Orientation="Horizontal" Margin="5,10,0,0">
-                    <Button x:Name="btAdd" Style="{StaticResource buStyle}" Content=" + " Click="btAdd_Click"/>
-                    <Button x:Name="btSave" Style="{StaticResource buStyle}" Content="{x:Static res:Strings.SaveChanges}" Click="btSave_Click"/>
-                    <Button x:Name="btDelete" Style="{StaticResource buStyle}" Content="{x:Static res:Strings.Delete}" Click="btDelete_Click"/>
+                    <Button x:Name="btAdd" Style="{StaticResource buStyle}" Content=" + " Click="btAdd_Click" ToolTip="Button om toe te voegen"/>
+                    <Button x:Name="btSave" Style="{StaticResource buStyle}" Content="{x:Static res:Strings.SaveChanges}" Click="btSave_Click" ToolTip="Button om op te slaan"/>
+                    <Button x:Name="btDelete" Style="{StaticResource buStyle}" Content="{x:Static res:Strings.Delete}" Click="btDelete_Click" ToolTip="Button om te deleten"/>
                 </StackPanel>
                 <GroupBox Header="{x:Static res:Strings.SelectedStaff}" Margin="0,5,0,0">
                     <Grid>
@@ -37,9 +43,9 @@
                             <ColumnDefinition Width="250"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="{x:Static res:Strings.UserName}"/>
                         <TextBox x:Name="tbUserName" Grid.Row="0" Grid.Column="1" Style="{StaticResource tbStyle}" LostFocus="tb_LostFocus" TextChanged="tb_TextChanged" />
@@ -52,7 +58,7 @@
             </StackPanel>
         </TabItem>
         <TabItem x:Name="tiEvents" Header="{x:Static res:Strings.Events}" GotFocus="tiEvents_GotFocus">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Style="{StaticResource TabBackgroundColorStyle}">
                 <Grid Margin="10, 15, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100"/>
@@ -65,6 +71,7 @@
                     <Label Content="{x:Static res:Strings.Events}"/>
                     <TextBox x:Name="tbEventSelect" Grid.Row="0" Grid.Column="1" Style="{StaticResource tbStyle}" TextChanged="tbEventSelect_TextChanged"/>
                     <ListBox x:Name="lbEventSelect" Grid.Row="1" Grid.ColumnSpan="2" ToolTipOpening="lbEventSelect_ToolTipOpening" SelectionChanged="lbEventSelect_SelectionChanged" />
+                    
                 </Grid>
                 <Grid Margin="10, 15, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left">
                     <Grid.ColumnDefinitions>
@@ -86,10 +93,15 @@
                     <Label Grid.Row="3" Content="{x:Static res:Strings.Staffs}"/>
                     <ListBox x:Name="lbStaffs" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding EventStaffs}" SelectedValuePath="EventId" DisplayMemberPath="Event.Name"/>
                 </Grid>
+                <StackPanel Orientation="Horizontal" Margin="-500,100,0,0">
+                    <Button x:Name="btAddEvent" Style="{StaticResource buStyle}" Content=" + " Click="btAddEvent_Click"/>
+                    <Button x:Name="btSaveEvent" Style="{StaticResource buStyle}" Content="{x:Static res:Strings.SaveChanges}" Click="btSaveEvent_Click"/>
+                    <Button x:Name="btDeleteEvent" Style="{StaticResource buStyle}" Content="{x:Static res:Strings.Delete}" Click="btDeleteEvent_Click"/>
+                </StackPanel>
             </StackPanel>
         </TabItem>
         <TabItem x:Name="tiLocation" Header="{x:Static res:Strings.Location}" GotFocus="tiLocation_GotFocus">
-            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical" Style="{StaticResource TabBackgroundColorStyle}">
                 <Grid Margin="10, 15, 0, 5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100"/>

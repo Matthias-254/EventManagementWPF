@@ -92,20 +92,29 @@ namespace EventManagement
 
         private void btSave_Click(object sender, RoutedEventArgs e)
         {
-            Staff staff = context.Staffs.FirstOrDefault(p => p.Name == tbUserName.Text);
-            if (staff == null)
-                staff = new Staff();
-            if (staff != null)
+            try
             {
-                staff.Name = tbUserName.Text;
-                staff.FirstName = tbFirstName.Text;
-                staff.LastName = tbLastName.Text;
-                if (staff.Id > 0)
-                    context.Update(staff);
-                else
-                    context.Add(staff);
-                context.SaveChanges();
-                InitTiStaff();
+                Staff staff = context.Staffs.FirstOrDefault(p => p.Name == tbUserName.Text);
+                if (staff == null)
+                    staff = new Staff();
+
+                if (staff != null)
+                {
+                    staff.Name = tbUserName.Text;
+                    staff.FirstName = tbFirstName.Text;
+                    staff.LastName = tbLastName.Text;
+                    if (staff.Id > 0)
+                        context.Update(staff);
+                    else
+                        context.Add(staff);
+                    context.SaveChanges();
+                    InitTiStaff();
+                    btSave.IsEnabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Er is een fout opgetreden bij het opslaan van de medewerker: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -151,19 +160,32 @@ namespace EventManagement
         private void tb_TextChanged(object sender, TextChangedEventArgs e)
         {
             textChanged = true;
+            EnableSaveButton();
+        }
+        private void EnableSaveButton()
+        {
+            btSave.IsEnabled = !string.IsNullOrWhiteSpace(tbUserName.Text) &&
+                               !string.IsNullOrWhiteSpace(tbFirstName.Text) &&
+                               !string.IsNullOrWhiteSpace(tbLastName.Text);
         }
 
         private void btDelete_Click(object sender, RoutedEventArgs e)
         {
-
-            string s = string.Format(Strings.ResourceManager.GetString("ConfirmDelete"), tbUserName.Text);
-            if (System.Windows.MessageBox.Show(s, Strings.ResourceManager.GetString("Delete?"), MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            try
             {
-                Staff staff = App.Context.Staffs.FirstOrDefault(p => p.Name == tbUserName.Text);
-                staff.Deleted = DateTime.Now;
-                context.Update(staff);
-                context.SaveChanges();
-                InitTiStaff();
+                string s = string.Format(Strings.ResourceManager.GetString("ConfirmDelete"), tbUserName.Text);
+                if (System.Windows.MessageBox.Show(s, Strings.ResourceManager.GetString("Delete?"), MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    Staff staff = App.Context.Staffs.FirstOrDefault(p => p.Name == tbUserName.Text);
+                    staff.Deleted = DateTime.Now;
+                    context.Update(staff);
+                    context.SaveChanges();
+                    InitTiStaff();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Er is een fout opgetreden bij het verwijderen van de medewerker: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -176,6 +198,7 @@ namespace EventManagement
                     btSave.IsEnabled = true;
                 }
                 textChanged = false;
+                EnableSaveButton();
             }
         }
 
@@ -200,6 +223,9 @@ namespace EventManagement
         {
             selectedEvent = eventList[((ListBox)sender).SelectedIndex];
             tiEvents.DataContext = selectedEvent;
+
+            btSaveEvent.IsEnabled = false;
+            btDeleteEvent.IsEnabled = selectedEvent != null && selectedEvent.Id > 0;
         }
 
         private void tbEventSelect_TextChanged(object sender, TextChangedEventArgs e)
@@ -209,12 +235,19 @@ namespace EventManagement
 
         private void InitTiLocation()
         {
+            try
+            {
                 locationList = context.Locations
                     .Where(loc => loc.Deleted > DateTime.Now)
                     .OrderBy(loc => loc.Name)
                     .ToList();
 
                 dgLocations.ItemsSource = locationList;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Er is een fout opgetreden bij het ophalen van locaties: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void tiLocation_GotFocus(object sender, RoutedEventArgs e)
@@ -239,6 +272,74 @@ namespace EventManagement
             {
                 MessageBox.Show($"Geselecteerde locatie: {selectedLocation.Name}, Adres: {selectedLocation.Address}");
             }
+        }
+
+        private void btAddEvent_Click(object sender, RoutedEventArgs e)
+        {
+            tbEventName.Text = "";
+            tbEventDescription.Text = "";
+            tbEventStartDate.SelectedDate = DateTime.Now;
+            selectedEvent = new Event();
+            btSaveEvent.IsEnabled = true;
+            btDeleteEvent.IsEnabled = false;
+        }
+
+        private void btSaveEvent_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (selectedEvent == null)
+                {
+                    selectedEvent = new Event();
+                }
+
+                selectedEvent.Name = tbEventName.Text;
+                selectedEvent.Description = tbEventDescription.Text;
+                selectedEvent.StartDate = tbEventStartDate.SelectedDate ?? DateTime.Now;
+
+                if (selectedEvent.Id > 0)
+                {
+                    context.Update(selectedEvent);
+                }
+                else
+                {
+                    context.Add(selectedEvent);
+                }
+
+                context.SaveChanges();
+                InitTiEvents();
+                btSaveEvent.IsEnabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Er is een fout opgetreden bij het opslaan van het evenement: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btDeleteEvent_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (selectedEvent != null && selectedEvent.Id > 0)
+                {
+                    selectedEvent.Deleted = DateTime.Now;
+                    context.Update(selectedEvent);
+                    context.SaveChanges();
+                    InitTiEvents();
+                    selectedEvent = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Er is een fout opgetreden bij het verwijderen van het evenement: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void EnableSaveEventButton()
+        {
+            btSaveEvent.IsEnabled = !string.IsNullOrWhiteSpace(tbEventName.Text) &&
+                                    !string.IsNullOrWhiteSpace(tbEventDescription.Text) &&
+                                    tbEventStartDate.SelectedDate.HasValue;
         }
     }
 }
